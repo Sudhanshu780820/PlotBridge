@@ -11,7 +11,6 @@ const DB_PATH = "mongodb+srv://Sudhanshudbuser:Sudhanshu123@sudhanshukumar.titac
 
 //Local Modules
 const storeRouter = require("./routes/storeRouter");
-const hostRouter = require("./routes/hostRouter");
 const authRouter = require("./routes/authRouter");
 const rootDir = require("./Utils/pathUtil");
 const errorController = require("./controllers/errors");
@@ -107,7 +106,7 @@ app.use("/host", (req, res, next) => {
         res.redirect("/login");
     }
 });
-app.use("/host", hostRouter);
+app.use(storeRouter);
 
 // 7. Error handling
 app.use(errorController.unknown);

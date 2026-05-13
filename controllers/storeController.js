@@ -5,6 +5,48 @@ const fs = require('fs');
 const Lead = require('../models/Lead');
 
 
+exports.getAddLand=(req, res, next)=>{
+    res.render('store/list-land', { pageTitle: 'List Your Land', currentPage: 'List Land', isLoggedIn: req.isLoggedIn, user: req.session.user });
+};
+
+exports.postAddLand = async (req, res, next) => {
+  try {
+     const { LandName, price, priceUnit, category, location, lat, lng, description, LandSize, sizeUnit } = req.body;
+
+    // ✅ CORRECT CHECK
+    if ( !req.files.photo ) {
+      return res.status(400).send("File upload failed");
+    }
+
+    // ✅ CORRECT ACCESS
+    const photo = req.files.photo[0].path;
+   
+
+    const land = new Land({
+            LandName,
+            price,
+            priceUnit,
+            category,
+            location,
+            createdAt: new Date(), // Add this line to set the creation date
+            lat: parseFloat(lat), // Ensure these are numbers
+            lng: parseFloat(lng),
+            description,
+            LandSize,
+            sizeUnit,
+            host: req.session.user._id, // THIS IS THE MISSING LINK
+            photo
+        });
+
+    await land.save();
+    console.log("Home saved successfully");
+
+    res.redirect("/browse");
+  } catch (err) {
+    console.log("Error while saving home:", err);
+    res.status(500).send("Server error");
+  }
+};
 
 exports.getIndex = (req, res, next) => {
     console.log("=== DEBUG ===");
