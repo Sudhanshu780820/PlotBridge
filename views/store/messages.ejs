@@ -1,0 +1,87 @@
+
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title><%= pageTitle %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+ <%- include('../partials/nav') %>
+<body class="bg-slate-50 font-sans">
+   
+
+    <main class="container mx-auto px-4 pt-32 pb-10 max-w-5xl">
+    <h1 class="text-3xl font-extrabold text-slate-900 mb-8">Message Center</h1>
+
+        <div class="grid grid-cols-1 gap-10">
+            <!-- SECTION: RECEIVED (For Sellers) -->
+            <section>
+                <h2 class="text-sm font-bold text-emerald-600 uppercase tracking-widest mb-4">Enquiries Received</h2>
+                <% if (inbound.length > 0) { %>
+                    <div class="space-y-4">
+                        <% inbound.forEach(item => { %>
+                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-bold text-lg"><%= item.landId.LandName %></h3>
+                                        <p class="text-slate-500 text-sm">From: <span class="text-slate-900 font-semibold"><%= item.name %></span></p>
+                                    </div>
+                                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase <%= item.status === 'New' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700' %>">
+                                        <%= item.status %>
+                                    </span>
+                                </div>
+                                <p class="mt-4 text-slate-600 italic bg-slate-50 p-4 rounded-2xl border border-slate-100">"<%= item.message %>"</p>
+                                
+                                <% if (!item.sellerReply) { %>
+                                    <form action="/reply" method="POST" class="mt-4 flex gap-2">
+                                        <input type="hidden" name="leadId" value="<%= item._id %>">
+                                        <input type="text" name="replyMessage" placeholder="Type your reply..." required class="flex-1 px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-500">
+                                        <button type="submit" class="bg-slate-900 text-white px-6 py-2 rounded-xl font-bold hover:bg-slate-800 transition-all">Reply</button>
+                                    </form>
+                                <% } else { %>
+                                    <div class="mt-4 text-sm text-emerald-600 font-semibold flex items-center">
+                                        <span class="mr-2">✓</span> Your Reply: <%= item.sellerReply %>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <p class="text-slate-400 italic">No one has enquired about your lands yet.</p>
+                <% } %>
+            </section>
+
+            <!-- SECTION: SENT (For Buyers) -->
+            <section>
+                <h2 class="text-sm font-bold text-blue-600 uppercase tracking-widest mb-4">Replies from Sellers</h2>
+                <% if (outbound.length > 0) { %>
+                    <div class="space-y-4">
+                        <% outbound.forEach(item => { %>
+                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm relative">
+                                <h3 class="font-bold text-lg"><%= item.landId.LandName %></h3>
+                                <p class="text-xs text-slate-400 mb-4">Sent on: <%= item.createdAt.toDateString() %></p>
+                                
+                                <% if (item.sellerReply) { %>
+                                    <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100">
+                                        <p class="text-xs font-bold text-blue-500 uppercase mb-2">Seller's Response:</p>
+                                        <p class="text-blue-900 font-medium">"<%= item.sellerReply %>"</p>
+                                    </div>
+                                <% } else { %>
+                                    <div class="flex items-center text-slate-400 text-sm italic">
+                                        <div class="w-2 h-2 bg-slate-300 rounded-full animate-pulse mr-2"></div>
+                                        Waiting for seller to reply...
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <p class="text-slate-400 italic">You haven't sent any enquiries yet.</p>
+                <% } %>
+            </section>
+        </div>
+    </main>
+</body>

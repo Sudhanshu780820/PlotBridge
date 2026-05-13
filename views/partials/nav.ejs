@@ -1,0 +1,35 @@
+<header class="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
+  <nav class="max-w-7xl mx-auto">
+    <div class="bg-white/90 backdrop-blur-lg shadow-xl border border-white/20 rounded-2xl px-6 py-2 flex items-center justify-between">
+      
+      <a href="/" class="text-2xl font-black tracking-tighter text-emerald-600">
+        PlotBridge
+      </a>
+
+      
+
+        <% if (isLoggedIn) { %>
+             <div class="hidden md:flex items-center gap-6">
+        <a href="/browse" class="text-sm font-bold text-gray-600 hover:text-emerald-600 transition">Browse Plots</a>
+        <a href="/list-land" class="text-sm font-bold text-gray-600 hover:text-emerald-600 transition">Sell Land</a>
+       </div>
+      <div class="flex items-center gap-3">
+           <a href="/messages" class="px-5 py-2 text-sm font-bold text-gray-600 rounded-xl hover:bg-emerald-50 transition">Message</a>
+             <a href="/profile" class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700     flex items-center justify-center font-bold hover:bg-emerald-200 transition">
+    <img src="/uploads/profile.png" alt="Profile" class="w-8 h-8 rounded-full object-cover">
+             </a>
+          <form action="/logout" method="POST" class="m-0">
+            <button type="submit" class="bg-red-50 text-red-600 px-5 py-2 rounded-xl text-sm font-bold hover:bg-red-600 hover:text-white transition">Sign Out</button>
+          </form>
+
+         
+        <% } else { %>
+          <div class="flex items-center gap-3">
+           <a href="/login" class="px-5 py-2 text-sm font-bold text-gray-600 rounded-xl hover:bg-emerald-50 transition">Login</a>
+          <a href="/signup" class="px-5 py-2 text-sm font-bold bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition">Join</a>
+        </
+        <% } %>
+      </div>
+    </div>
+  </nav>
+</header>

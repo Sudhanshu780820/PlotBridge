@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= land.LandName %> | PlotBridge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- 1. ADDED THESE TWO LINES TO MAKE THE MAP WORK -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        /* Prevent map icons from breaking layout */
+        .leaflet-container { z-index: 1 !important; }
+    </style>
+</head>
+<body class="bg-purple-600 text-slate-800 font-sans">
+
+    <!-- Premium Navbar -->
+    <nav class="bg-white/80 backdrop-blur-md border-b border-slate-100 p-5 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center max-w-7xl">
+            <a href="/" class="text-2xl font-extrabold tracking-tight text-emerald-600">Plot<span class="text-slate-800">Bridge</span></a>
+            <a href="/browse" class="group flex items-center text-sm font-semibold text-slate-500 hover:text-emerald-600 transition-colors">
+                <span class="mr-2 transform group-hover:-translate-x-1 transition-transform">←</span> Back to Listings
+            </a>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-10 max-w-7xl">
+        <div class="lg:hidden mb-6">
+            <span class="inline-block bg-emerald-100 text-emerald-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-3">
+                <%= land.category %>
+            </span>
+            <h1 class="text-3xl font-extrabold text-slate-900 leading-tight"><%= land.LandName %></h1>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <!-- LEFT: Hero Image Section -->
+            <div class="lg:col-span-8">
+                <div class="relative group rounded-[2.5rem] overflow-hidden shadow-2xl shadow-emerald-100/50 bg-white p-2">
+                    <div class="aspect-[16/10] overflow-hidden rounded-[2rem]">
+                        <img src="/<%= land.photo %>" alt="<%= land.landName %>" 
+                             class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="absolute top-8 left-8">
+                         <span class="bg-white/90 backdrop-blur-sm shadow-xl text-slate-900 px-5 py-2 rounded-2xl text-xs font-bold uppercase tracking-widest border border-white/20">
+                            Listing: Active
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-10 bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center">
+                        <span class="w-8 h-1 bg-emerald-500 rounded-full mr-3"></span>
+                        Property Overview
+                    </h2>
+                    <p class="text-slate-600 leading-loose text-lg whitespace-pre-line">
+                        <%= land.description %>
+                    </p>
+                </div>
+            </div>
+
+            <!-- RIGHT: Sidebar Info -->
+            <div class="lg:col-span-4 space-y-8">
+                <div class="bg-slate-900 text-white p-8 rounded-[2.5rem] shadow-2xl shadow-slate-200 relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/20 rounded-full blur-3xl"></div>
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] mb-2">Asking Price</p>
+                    <div class="flex items-baseline gap-2 mb-8">
+                        <span class="text-4xl font-extrabold tracking-tighter">
+                            <% if (land.priceUnit === 'Dollar') { %>$<% } else { %>₹<% } %><%= land.price %>
+                        </span>
+                        <span class="text-emerald-400 font-bold uppercase text-sm"><%= land.priceUnit %></span>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/10">
+                            <span class="text-slate-400 text-sm">Land Area</span>
+                            <span class="font-bold text-lg"><%= land.LandSize %> <span class="text-xs font-normal opacity-60"><%= land.sizeUnit %></span></span>
+                        </div>
+                        <div class="flex items-start gap-3 px-2">
+                            <svg class="w-5 h-5 text-emerald-500 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <p class="text-slate-300 text-sm leading-relaxed"><%= land.location %></p>
+                        </div>
+                       <button onclick="toggleModal()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-extrabold py-5 rounded-2xl transition-all shadow-lg">
+                                 Inquire Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Map Section -->
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                    <h2 class="text-xl font-bold text-slate-900 mb-6 flex items-center">
+                        <span class="w-8 h-1 bg-emerald-500 rounded-full mr-3"></span>
+                        Location on Map
+                    </h2>
+                    <div id="viewMap" class="h-96 rounded-3xl shadow-inner border-4 border-slate-50 bg-slate-50"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="container mx-auto px-4 py-12 text-center text-slate-400 text-xs tracking-widest uppercase border-t border-slate-100 mt-20">
+        &copy; 2026 PlotBridge Luxury Real Estate
+    </footer>
+
+    <!-- 2. UPDATED MAP SCRIPT TO ENSURE IT FITS AND WORKS -->
+   
+    
+    <!-- Enquiry Modal -->
+<div id="enquiryModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+    <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden transform transition-all">
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-extrabold text-slate-900">Request Details</h2>
+                <button onclick="toggleModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+            </div>
+            
+            <form id="enquiryForm" class="space-y-4">
+                <input type="hidden" name="landId" value="<%= land._id %>">
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Full Name</label>
+                    <input type="text" name="name" required class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Email</label>
+                        <input type="email" name="email" required class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Phone</label>
+                        <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:ring-2 focus:ring-emerald-500 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Message</label>
+                    <textarea name="message" rows="3" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:ring-2 focus:ring-emerald-500 outline-none">I am interested in <%= land.LandName %>.</textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 text-white font-bold py-4 rounded-2xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 mt-4">
+                    Send Enquiry
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+ <script>
+        // Use coordinates with a fallback to 0 to prevent crashes
+        var lat = <%= land.lat || 0 %>;
+        var lng = <%= land.lng || 0 %>;
+
+        if (lat !== 0 && lng !== 0) {
+            // Initialize map
+            var map = L.map('viewMap', {
+                scrollWheelZoom: false // Better for user experience while scrolling page
+            }).setView([lat, lng], 15);
+
+            // Load Premium Tiles
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+
+            // Add Marker
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup("<b><%= land.LandName %></b>")
+                .openPopup();
+
+            // CRITICAL: This fixes the "blank map" issue caused by Tailwind's layout engine
+            setTimeout(function() {
+                map.invalidateSize();
+            }, 500);
+        } else {
+            document.getElementById('viewMap').innerHTML = 
+                "<div class='flex items-center justify-center h-full text-slate-400 italic text-sm'>Map coordinates not available</div>";
+        }
+        console.log("✅ PlotBridge Script Loaded!");
+        // 1. Function to show/hide the modal
+function toggleModal() {
+    const modal = document.getElementById('enquiryModal');
+    // This switches the modal between 'hidden' and 'flex'
+    if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+}
+
+// 2. Handle the form submission without reloading the page
+document.getElementById('enquiryForm').addEventListener('submit', async (e) => {
+    e.preventDefault(); // Prevents the page from refreshing
+    
+    // Collect the form data
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+        const response = await fetch('/enquire', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            alert('Success! Your enquiry has been sent.');
+            toggleModal(); // Close the modal
+            e.target.reset(); // Clear the form
+        } else {
+            alert('Error: Could not send enquiry. Check your server routes.');
+        }
+    } catch (err) {
+        console.error('Fetch error:', err);
+        alert('Server is not responding.');
+    }
+});
+    </script>
+</body>
+</html>

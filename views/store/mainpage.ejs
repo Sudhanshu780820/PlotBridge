@@ -1,0 +1,67 @@
+
+    <%-include('../partials/head') %>
+    <%- include('../partials/nav') %>
+
+    <section class="bg-emerald-900 py-20 px-4 text-center">
+        <h2 class="text-white text-4xl md:text-6xl font-bold mb-6">Own a piece of the Earth.</h2>
+        <p class="text-emerald-100 text-lg mb-10 max-w-xl mx-auto">
+            The most trusted platform for buying and selling residential and agricultural land in Madhya Pradesh.
+        </p>
+        <div class="max-w-2xl mx-auto bg-white p-2 rounded-2xl shadow-xl flex flex-col md:flex-row gap-2">
+            <input type="text" placeholder="Search by city (e.g. Bhopal, Indore...)" class="flex-grow p-4 outline-none rounded-xl">
+            <button class="bg-orange-500 text-white px-8 py-4 rounded-xl font-bold hover:bg-orange-600 transition">
+                Search
+            </button>
+        </div>
+    </section>
+
+    <main class="container mx-auto px-4 py-16">
+        <div class="flex items-center justify-between mb-10">
+            <h3 class="text-3xl font-bold text-slate-800">Featured Plots</h3>
+            <span class="text-emerald-600 font-semibold cursor-pointer">See all &rarr;</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+         <% registeredLand.forEach(plot => { %>
+            <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-md transition">
+                <div class="h-56 bg-slate-200 relative">
+                    <img src="<%= plot.photo %>" alt="Land" class="w-full h-full object-cover">
+                    <span class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">Residential</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-2xl font-bold text-slate-900 mb-1"> <%= plot.price %>
+                        <span class="text-xs font-bold uppercase text-emerald-700 ml-0.5">
+                    <%= plot.priceUnit %>
+                        </span> </p>
+                    <p class="text-slate-500 mb-4 flex items-center text-sm">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <%= plot.location %>
+                    </p>
+                    <div class="flex justify-between items-center py-4 border-t border-slate-100">
+                        <span class="text-slate-600 text-sm italic"> <%= plot.LandSize %>  <%= plot.sizeUnit %> </span>
+                         <span class="text-[10px] font-medium text-slate-400 ml-0.5">
+                        
+                       </span>
+                        
+                    </div>
+                </div>
+            </div>
+
+           
+                <% }) %>
+
+           
+                
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-12 mt-20">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2026 PlotBridge Land Solutions. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
