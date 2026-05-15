@@ -1,3 +1,5 @@
+import (v2 as cloudinary) from 'cloudinary';
+
 //core module
 const path = require('path');
 

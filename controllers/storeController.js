@@ -13,12 +13,12 @@ exports.postAddLand = async (req, res, next) => {
   try {
      const { LandName, price, priceUnit, category, location, lat, lng, description, LandSize, sizeUnit } = req.body;
 
-    // ✅ CORRECT CHECK
+
     if ( !req.files.photo ) {
       return res.status(400).send("File upload failed");
     }
 
-    // ✅ CORRECT ACCESS
+
     const photo = req.files.photo[0].path;
    
 
